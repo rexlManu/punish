@@ -1,0 +1,28 @@
+image: maven:3.5.0-jdk-8
+
+stages:
+  - build
+  - test
+  - deploy
+
+compile:
+  stage: build
+  script:
+    - mvn package --batch-mode
+
+verify:
+  stage: test
+  script:
+    - mvn verify --batch-mode
+
+publish:
+  stage: deploy
+  script:
+    - mv /builds/teamhq/punish/bootstrap/bootstrap-1.0-SNAPSHOT-jar-with-dependencies.jar
+  artifacts:
+    paths:
+      - "*.jar"
+    expire_in: 30d
+  when: on_success
+  only:
+    - tags
