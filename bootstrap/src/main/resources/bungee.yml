@@ -1,0 +1,12 @@
+main: de.rexlmanu.punish.bootstrap.PunishPlugin
+name: Punish
+version: 0.1
+author: Emmanuel Lampe
+commands:
+  ban:
+  template:
+  mute:
+  unmute:
+  unban:
+  banhistory:
+  mutehistory:
