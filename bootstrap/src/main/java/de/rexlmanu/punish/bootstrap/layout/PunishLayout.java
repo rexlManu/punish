@@ -10,7 +10,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class PunishLayout {
 
-    public static String getKickLayout(Context context) {
+    public static String getBanLayout(Context context) {
         return String.format(
                 "              §a§lTeam§2§lHG\n" +
                         "§8§m---------------------------------------\n" +
@@ -25,6 +25,19 @@ public class PunishLayout {
                         "\n" +
                         "§8§m---------------------------------------\n",
                 context.getReason().getReason(), formatExpiration(context.getExpiration()));
+    }
+
+    public static String getKickLayout(String reason) {
+        return String.format(
+                "              §a§lTeam§2§lHG\n" +
+                        "§8§m---------------------------------------\n" +
+                        "\n" +
+                        "§cDu wurdest vom §cNetzwerk gekickt\n" +
+                        "\n" +
+                        "§aGrund §8» §e%s\n" +
+                        "\n" +
+                        "§8§m---------------------------------------\n",
+                reason);
     }
 
     public static String formatExpiration(long expiration) {

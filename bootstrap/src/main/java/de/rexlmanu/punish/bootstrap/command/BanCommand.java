@@ -74,7 +74,7 @@ public class BanCommand extends Command {
 
         ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(uuid);
         if (proxiedPlayer != null) {
-            proxiedPlayer.disconnect(TextComponent.fromLegacyText(PunishLayout.getKickLayout(context)));
+            proxiedPlayer.disconnect(TextComponent.fromLegacyText(PunishLayout.getBanLayout(context)));
         }
     }
 }

@@ -30,7 +30,7 @@ public class PunishListener implements Listener {
         if (punishPlayer == null) return;
         PunishPlugin.PUNISH_PLAYER_MAP.put(player.getUniqueId(), punishPlayer);
         punishPlayer.getActiveContexts().stream().filter(context -> context.getType().equals(Type.BAN)).findFirst().ifPresent(context -> {
-            player.disconnect(TextComponent.fromLegacyText(PunishLayout.getKickLayout(context)));
+            player.disconnect(TextComponent.fromLegacyText(PunishLayout.getBanLayout(context)));
         });
 
     }

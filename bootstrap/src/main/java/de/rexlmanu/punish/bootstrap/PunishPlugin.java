@@ -66,6 +66,7 @@ public class PunishPlugin extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new UnbanCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new MuteHistoryCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanHistoryCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new KickCommand());
     }
 
     @Override
