@@ -12,7 +12,7 @@ public class PunishLayout {
 
     public static String getBanLayout(Context context) {
         return String.format(
-                "              §a§lTeam§2§lHG\n" +
+                "       §a§lTeam§2§lHG\n" +
                         "§8§m---------------------------------------\n" +
                         "\n" +
                         "§cDu wurdest vom §cNetzwerk gebannt\n" +
@@ -29,7 +29,7 @@ public class PunishLayout {
 
     public static String getKickLayout(String reason) {
         return String.format(
-                "              §a§lTeam§2§lHG\n" +
+                "       §a§lTeam§2§lHG\n" +
                         "§8§m---------------------------------------\n" +
                         "\n" +
                         "§cDu wurdest vom §cNetzwerk gekickt\n" +

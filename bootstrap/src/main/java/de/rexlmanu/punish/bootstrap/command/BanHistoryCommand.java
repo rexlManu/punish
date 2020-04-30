@@ -44,11 +44,11 @@ public class BanHistoryCommand extends Command {
         sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Banhistorie: "));
         Lists.reverse(punishPlayer.getContexts().stream().filter(c -> c.getType().equals(Type.BAN)).collect(Collectors.toList())).forEach(context -> {
             sender.sendMessage(TextComponent.fromLegacyText(String.format(
-                    "Grund: %s, Bandatum: %s, Entbannungsdatum: %s, Manuelle Entbannung: %s",
+                    "§eGrund§8: §7%s§8, §eBandatum§8: §7%s§8, §eEntbannungsdatum§8: §7%s§8, §eManuelle Entbannung§8: §7%s",
                     context.getReason().getReason(),
                     PunishLibrary.formatDate(context.getCreateDate()),
                     PunishLayout.formatExpiration(context.getExpiration()),
-                    context.isPardon() ? "Ja" : "Nein"
+                    context.isPardon() ? "§aJa" : "§cNein"
             )));
         });
     }

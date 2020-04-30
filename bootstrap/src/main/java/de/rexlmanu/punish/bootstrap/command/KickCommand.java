@@ -37,7 +37,7 @@ public class KickCommand extends Command {
         }
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 1; i < arguments.length; i++) builder.append(arguments[i]);
+        for (int i = 1; i < arguments.length; i++) builder.append(arguments[i]).append(" ");
         target.disconnect(TextComponent.fromLegacyText(PunishLayout.getKickLayout(builder.toString())));
         sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du hast erfolgreich den Spieler gekickt."));
     }

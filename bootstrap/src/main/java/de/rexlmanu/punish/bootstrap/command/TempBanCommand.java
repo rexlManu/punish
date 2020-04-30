@@ -58,7 +58,7 @@ public class TempBanCommand extends Command {
             }
         }
         StringBuilder builder = new StringBuilder();
-        for (int i = 3; i < arguments.length; i++) builder.append(arguments[i]);
+        for (int i = 3; i < arguments.length; i++) builder.append(arguments[i]).append(" ");
 
         Context context = new Context(new Reason(-1, builder.toString()), Type.BAN, expiration + System.currentTimeMillis());
         player.getContexts().add(context);
