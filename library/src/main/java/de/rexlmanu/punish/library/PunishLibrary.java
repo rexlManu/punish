@@ -18,7 +18,7 @@ public class PunishLibrary {
 
     public static final JsonParser PARSER = new JsonParser();
 
-    public static final String PREFIX = "§7» §a§lTeam§2§lHG §8§l| §7",
+    public static final String PREFIX = "§7» §c§lBansystem §8§l| §7",
             PERMISSION_REQUIRED = PREFIX + "Dir fehlen die Rechte um diese Aktion auszuführen!";
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");

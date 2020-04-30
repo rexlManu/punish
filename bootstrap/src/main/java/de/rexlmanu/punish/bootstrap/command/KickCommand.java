@@ -5,6 +5,8 @@ package de.rexlmanu.punish.bootstrap.command;
 
 import de.rexlmanu.punish.bootstrap.layout.PunishLayout;
 import de.rexlmanu.punish.library.PunishLibrary;
+import de.rexlmanu.punish.library.PunishPermission;
+import de.rexlmanu.punish.library.cloud.CloudUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,10 +31,13 @@ public class KickCommand extends Command {
             return;
         }
 
-        StringBuilder builder = new StringBuilder();
-        for (int i = 1; i < arguments.length; i++) {
-            builder.append(arguments[i]);
+        if (CloudUtil.playerHasPermission(target.getUniqueId(), PunishPermission.TEAM) && !sender.hasPermission(PunishPermission.TEAM_BYPASS)) {
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du kannst keine Teammitglieder kicken."));
+            return;
         }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < arguments.length; i++) builder.append(arguments[i]);
         target.disconnect(TextComponent.fromLegacyText(PunishLayout.getKickLayout(builder.toString())));
         sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du hast erfolgreich den Spieler gekickt."));
     }

@@ -7,6 +7,8 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.rexlmanu.punish.bootstrap.PunishPlugin;
 import de.rexlmanu.punish.bootstrap.layout.PunishLayout;
 import de.rexlmanu.punish.library.PunishLibrary;
+import de.rexlmanu.punish.library.PunishPermission;
+import de.rexlmanu.punish.library.cloud.CloudUtil;
 import de.rexlmanu.punish.protocol.PunishPlayer;
 import de.rexlmanu.punish.protocol.punish.Context;
 import de.rexlmanu.punish.protocol.punish.Reason;
@@ -18,7 +20,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class MuteCommand extends Command {
@@ -36,6 +37,10 @@ public class MuteCommand extends Command {
 
         if (uuid == null) {
             sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
+            return;
+        }
+        if (CloudUtil.playerHasPermission(uuid, PunishPermission.TEAM) && !sender.hasPermission(PunishPermission.TEAM_BYPASS)) {
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du kannst keine Teammitglieder muten."));
             return;
         }
 
@@ -66,7 +71,7 @@ public class MuteCommand extends Command {
 
         Context context = new Context(
                 new Reason(template.getId(), template.getReason()), template.getType(),
-                template.getExpiration() == -1 ? -1 : new Date().getTime() + template.getExpiration());
+                template.getExpiration() == -1 ? -1 : System.currentTimeMillis() + template.getExpiration());
         player.getContexts().add(context);
         PunishPlugin.getPlugin().getProvider().updatePlayer(player);
         sender.sendMessage(new TextComponent(String.format(PunishLibrary.PREFIX + "Du hast den Spieler %s erfolgreich gemutet.", arguments[0])));

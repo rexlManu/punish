@@ -11,3 +11,4 @@ commands:
   banhistory:
   mutehistory:
   kick:
+  tempban:

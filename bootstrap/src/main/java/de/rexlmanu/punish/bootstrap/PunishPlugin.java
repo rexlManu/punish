@@ -19,6 +19,7 @@ import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import javax.management.RuntimeOperationsException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +51,18 @@ public class PunishPlugin extends Plugin {
 
         if (this.databaseConfiguration.getDriver().equals(DatabaseConfiguration.MONGODB_DRIVER)) {
             this.database = new MongoDBDatabase(PunishLibrary.GSON.fromJson(this.databaseConfiguration.getElement().getAsJsonObject().get("credentials"),
-                    new TypeToken<MongoDBCredentials>() {}.getType()));
+                    new TypeToken<MongoDBCredentials>() {
+                    }.getType()));
             this.database.connect();
             this.provider = this.database.provider();
         } else {
             throw new UnsupportedOperationException("Currently only mongodb is supported as database.");
         }
+
+        if (!this.database.isConnected()) {
+            throw new RuntimeException("The database is not connected.");
+        }
+
         this.templates = this.templateConfiguration.getTemplates();
 
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PunishListener());
@@ -67,6 +74,7 @@ public class PunishPlugin extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new MuteHistoryCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanHistoryCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new KickCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TempBanCommand());
     }
 
     @Override
