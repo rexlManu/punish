@@ -23,28 +23,28 @@ public class UnbanCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if (arguments.length != 1) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Verwendung: /unban <name>"));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /unban <name>"));
             return;
         }
         UUID uuid = CloudAPI.getInstance().getPlayerUniqueId(arguments[0]);
 
         if (uuid == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
             return;
         }
 
         PunishPlayer punishPlayer = PunishPlugin.getPlugin().getProvider().getPlayer(uuid);
         if (punishPlayer == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gebannt."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gebannt."));
             return;
         }
         Context context = punishPlayer.getActiveContexts().stream().filter(c -> c.getType().equals(Type.BAN)).findFirst().orElse(null);
         if (context == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Der Spieler ist zurzeit nicht gebannt."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler ist zurzeit nicht gebannt."));
             return;
         }
         context.setPardon(true);
         PunishPlugin.getPlugin().getProvider().updatePlayer(punishPlayer);
-        sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Du hast erfolgreich diesen Spieler entbannt."));
+        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du hast erfolgreich diesen Spieler entbannt."));
     }
 }

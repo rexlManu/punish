@@ -12,3 +12,5 @@ commands:
   mutehistory:
   kick:
   tempban:
+  clearhistory:
+  tempmute:

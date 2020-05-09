@@ -25,29 +25,29 @@ public class UnmuteCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if (arguments.length != 1) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Verwendung: /unmute <name>"));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /unmute <name>"));
             return;
         }
         UUID uuid = CloudAPI.getInstance().getPlayerUniqueId(arguments[0]);
 
         if (uuid == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
             return;
         }
 
         PunishPlayer punishPlayer = PunishPlugin.getPlugin().getProvider().getPlayer(uuid);
         if (punishPlayer == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gemutet."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gemutet."));
             return;
         }
         Context context = punishPlayer.getActiveContexts().stream().filter(c -> c.getType().equals(Type.MUTE)).findFirst().orElse(null);
         if (context == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Der Spieler ist zurzeit nicht gemutet."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler ist zurzeit nicht gemutet."));
             return;
         }
         context.setPardon(true);
         PunishPlugin.getPlugin().getProvider().updatePlayer(punishPlayer);
-        sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Du hast erfolgreich diesen Spieler entmutet."));
+        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du hast erfolgreich diesen Spieler entmutet."));
 
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         if (player != null) {

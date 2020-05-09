@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 public class PunishPlayer {
 
     public static PunishPlayer create(UUID uuid) {
-        return new PunishPlayer(uuid, new ArrayList<Context>());
+        return new PunishPlayer(uuid, new ArrayList<>(), new ArrayList<>());
     }
 
     private UUID uuid;
     private List<Context> contexts;
+    private List<String> ipAddresses;
 
     public List<Context> getActiveContexts() {
         return this.contexts.stream().filter(context -> !context.isOver()).collect(Collectors.toList());

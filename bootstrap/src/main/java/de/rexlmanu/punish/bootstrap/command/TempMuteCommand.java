@@ -5,6 +5,7 @@ package de.rexlmanu.punish.bootstrap.command;
 
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.rexlmanu.punish.bootstrap.PunishPlugin;
+import de.rexlmanu.punish.bootstrap.layout.PunishLayout;
 import de.rexlmanu.punish.library.PunishLibrary;
 import de.rexlmanu.punish.library.PunishPermission;
 import de.rexlmanu.punish.library.cloud.CloudUtil;
@@ -21,15 +22,15 @@ import net.md_5.bungee.api.plugin.Command;
 
 import java.util.UUID;
 
-public class TempBanCommand extends Command {
-    public TempBanCommand() {
-        super("tempban", "punish.command.tempban");
+public class TempMuteCommand extends Command {
+    public TempMuteCommand() {
+        super("tempmute", "punish.command.tempmute");
     }
 
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if (arguments.length < 3) {
-            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /tempban <name> <zeit> <grund...>"));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /tempmute <name> <zeit> <grund...>"));
             return;
         }
         UUID uniqueId = CloudAPI.getInstance().getPlayerUniqueId(arguments[0]);
@@ -42,7 +43,7 @@ public class TempBanCommand extends Command {
             return;
         }
         if (CloudUtil.playerHasPermission(uniqueId, PunishPermission.TEAM) && !sender.hasPermission(PunishPermission.TEAM_BYPASS)) {
-            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du kannst keine Teammitglieder bannen."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du kannst keine Teammitglieder muten."));
             return;
         }
         long expiration = TimeParser.parseStringToMillis(arguments[1]);
@@ -54,24 +55,25 @@ public class TempBanCommand extends Command {
         if (player == null) {
             player = PunishPlayer.create(uniqueId);
         } else {
-            Context activeContext = player.getActiveContexts().stream().filter(c -> c.getType().equals(Type.BAN) && !c.isOver()).findFirst().orElse(null);
+            Context activeContext = player.getActiveContexts().stream().filter(c -> c.getType().equals(Type.MUTE) && !c.isOver()).findFirst().orElse(null);
             if (activeContext != null) {
-                sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler ist bereits gebannt."));
+                sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler ist bereits gemutet."));
                 return;
             }
         }
         StringBuilder builder = new StringBuilder();
         for (int i = 2; i < arguments.length; i++) builder.append(arguments[i]).append(" ");
 
-        Context context = new Context(new Reason(-1, builder.toString(), null), Type.BAN, expiration + System.currentTimeMillis());
+        Context context = new Context(new Reason(-1, builder.toString(), null), Type.MUTE, expiration + System.currentTimeMillis());
         player.getContexts().add(context);
         PunishPlugin.getPlugin().getProvider().updatePlayer(player);
 
         ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(uniqueId);
         if (proxiedPlayer != null) {
-            proxiedPlayer.disconnect(TextComponent.fromLegacyText(PunishPlugin.getPlugin().getLayoutConfiguration().getBanLayout().getAsKickLayout(context.getReason().getReason(), context.getExpiration())));
+            PunishPlugin.PUNISH_PLAYER_MAP.put(player.getUuid(), player);
+            PunishLayout.sendChatLayout(proxiedPlayer, context);
         }
 
-        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler wurde erfolgreich zeitlich gebannt."));
+        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler wurde erfolgreich zeitlich gemutet."));
     }
 }

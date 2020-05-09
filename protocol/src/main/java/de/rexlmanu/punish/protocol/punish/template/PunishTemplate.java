@@ -7,6 +7,8 @@ import de.rexlmanu.punish.protocol.punish.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class PunishTemplate {
@@ -14,6 +16,6 @@ public class PunishTemplate {
     private int id;
     private String reason;
     private Type type;
-    private long expiration;
+    private List<TemplateStage> stages;
 
 }

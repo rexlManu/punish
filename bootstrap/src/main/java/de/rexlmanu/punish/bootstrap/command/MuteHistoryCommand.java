@@ -13,11 +13,12 @@ import de.rexlmanu.punish.protocol.punish.Type;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class MuteHistoryCommand extends Command {
+public class MuteHistoryCommand extends Command implements TabExecutor {
     public MuteHistoryCommand() {
         super("mutehistory", "punish.command.mutehistory");
     }
@@ -25,19 +26,24 @@ public class MuteHistoryCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if (arguments.length != 1) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Verwendung: /mutehistory <name>"));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /mutehistory <name>"));
             return;
         }
         UUID uuid = CloudAPI.getInstance().getPlayerUniqueId(arguments[0]);
 
         if (uuid == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Die uuid konnte nicht gefunden werden."));
             return;
         }
 
         PunishPlayer punishPlayer = PunishPlugin.getPlugin().getProvider().getPlayer(uuid);
         if (punishPlayer == null) {
-            sender.sendMessage(new TextComponent(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gemutet."));
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Dieser Spieler wurde noch nie gemutet."));
+            return;
+        }
+
+        if (punishPlayer.getContexts().isEmpty()) {
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Dieser Spieler hat keine History."));
             return;
         }
 
@@ -51,5 +57,10 @@ public class MuteHistoryCommand extends Command {
                     context.isPardon() ? "§aJa" : "§cNein"
             )));
         });
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
+        return null;
     }
 }

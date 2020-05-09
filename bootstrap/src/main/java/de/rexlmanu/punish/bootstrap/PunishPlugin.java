@@ -6,6 +6,7 @@ package de.rexlmanu.punish.bootstrap;
 import com.google.gson.reflect.TypeToken;
 import de.rexlmanu.punish.bootstrap.command.*;
 import de.rexlmanu.punish.bootstrap.configuration.DatabaseConfiguration;
+import de.rexlmanu.punish.bootstrap.configuration.LayoutConfiguration;
 import de.rexlmanu.punish.bootstrap.configuration.TemplateConfiguration;
 import de.rexlmanu.punish.bootstrap.listener.PunishListener;
 import de.rexlmanu.punish.database.Database;
@@ -19,7 +20,6 @@ import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import javax.management.RuntimeOperationsException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +35,7 @@ public class PunishPlugin extends Plugin {
 
     private DatabaseConfiguration databaseConfiguration;
     private TemplateConfiguration templateConfiguration;
+    private LayoutConfiguration layoutConfiguration;
     private Database database;
 
     private PunishProvider provider;
@@ -48,6 +49,7 @@ public class PunishPlugin extends Plugin {
 
         this.databaseConfiguration = new DatabaseConfiguration();
         this.templateConfiguration = new TemplateConfiguration();
+        this.layoutConfiguration = new LayoutConfiguration();
 
         if (this.databaseConfiguration.getDriver().equals(DatabaseConfiguration.MONGODB_DRIVER)) {
             this.database = new MongoDBDatabase(PunishLibrary.GSON.fromJson(this.databaseConfiguration.getElement().getAsJsonObject().get("credentials"),
@@ -75,6 +77,8 @@ public class PunishPlugin extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanHistoryCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new KickCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new TempBanCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new ClearHistoryCommand());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new TempMuteCommand());
     }
 
     @Override

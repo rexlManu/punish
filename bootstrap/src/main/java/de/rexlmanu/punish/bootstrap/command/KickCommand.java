@@ -3,7 +3,7 @@
  */
 package de.rexlmanu.punish.bootstrap.command;
 
-import de.rexlmanu.punish.bootstrap.layout.PunishLayout;
+import de.rexlmanu.punish.bootstrap.PunishPlugin;
 import de.rexlmanu.punish.library.PunishLibrary;
 import de.rexlmanu.punish.library.PunishPermission;
 import de.rexlmanu.punish.library.cloud.CloudUtil;
@@ -30,15 +30,20 @@ public class KickCommand extends Command {
             sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Der Spieler konnte nicht gefunden werden."));
             return;
         }
+        if (sender.getName().equals(arguments[0].toLowerCase())) {
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Bitte versuche keine Selbstverletzung."));
+            return;
+        }
 
         if (CloudUtil.playerHasPermission(target.getUniqueId(), PunishPermission.TEAM) && !sender.hasPermission(PunishPermission.TEAM_BYPASS)) {
             sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du kannst keine Teammitglieder kicken."));
             return;
         }
 
+
         StringBuilder builder = new StringBuilder();
         for (int i = 1; i < arguments.length; i++) builder.append(arguments[i]).append(" ");
-        target.disconnect(TextComponent.fromLegacyText(PunishLayout.getKickLayout(builder.toString())));
+        target.disconnect(TextComponent.fromLegacyText(PunishPlugin.getPlugin().getLayoutConfiguration().getKickLayout().getAsKickLayout(builder.toString(), "")));
         sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Du hast erfolgreich den Spieler gekickt."));
     }
 }

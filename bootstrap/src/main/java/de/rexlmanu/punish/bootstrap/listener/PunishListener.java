@@ -17,6 +17,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PunishListener implements Listener {
@@ -27,12 +28,30 @@ public class PunishListener implements Listener {
     public void handle(PostLoginEvent event) {
         ProxiedPlayer player = event.getPlayer();
         PunishPlayer punishPlayer = PunishPlugin.getPlugin().getProvider().getPlayer(player.getUniqueId());
-        if (punishPlayer == null) return;
-        PunishPlugin.PUNISH_PLAYER_MAP.put(player.getUniqueId(), punishPlayer);
-        punishPlayer.getActiveContexts().stream().filter(context -> context.getType().equals(Type.BAN)).findFirst().ifPresent(context -> {
-            player.disconnect(TextComponent.fromLegacyText(PunishLayout.getBanLayout(context)));
-        });
-
+        String address = event.getPlayer().getAddress().getAddress().getHostAddress().replace("\\", "");
+        boolean found = false;
+        if (punishPlayer != null) {
+            Context context = punishPlayer.getActiveContexts().stream().filter(c -> c.getType().equals(Type.BAN)).findFirst().orElse(null);
+            PunishPlugin.PUNISH_PLAYER_MAP.put(player.getUniqueId(), punishPlayer);
+            if (context != null) {
+                found = true;
+                player.disconnect(TextComponent.fromLegacyText(PunishPlugin.getPlugin().getLayoutConfiguration().getBanLayout().getAsKickLayout(context.getReason().getReason(), context.getExpiration())));
+                punishPlayer.getIpAddresses().add(address);
+                PunishPlugin.getPlugin().getProvider().updatePlayer(punishPlayer);
+            }
+        }
+        if (!found) {
+            List<PunishPlayer> players = PunishPlugin.getPlugin().getProvider().getPlayerByAddresses(address);
+            players.forEach(p -> p.getActiveContexts().stream().filter(context -> context.getType().equals(Type.BAN)).findFirst().ifPresent(context -> {
+                player.disconnect(TextComponent.fromLegacyText(PunishPlugin.getPlugin().getLayoutConfiguration().getBanLayout().getAsKickLayout(context.getReason().getReason(), context.getExpiration())));
+                if (punishPlayer == null) {
+                    PunishPlugin.getPlugin().getProvider().updatePlayer(new PunishPlayer(player.getUniqueId(), Collections.singletonList(context), Collections.singletonList(address)));
+                } else {
+                    punishPlayer.getContexts().add(context);
+                    PunishPlugin.getPlugin().getProvider().updatePlayer(punishPlayer);
+                }
+            }));
+        }
     }
 
     @EventHandler

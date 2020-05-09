@@ -17,12 +17,15 @@ import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
 public class MongoDBPunishProvider implements PunishProvider {
 
-    public static final Type PLAYER_TYPE = new TypeToken<PunishPlayer>(){}.getType();
+    public static final Type PLAYER_TYPE = new TypeToken<PunishPlayer>() {
+    }.getType();
     private static final Gson GSON = new GsonBuilder().serializeNulls().create();
     private static final JsonParser PARSER = new JsonParser();
     private static final JsonWriterSettings JSON_WRITER_SETTINGS = JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build();
@@ -45,5 +48,13 @@ public class MongoDBPunishProvider implements PunishProvider {
         }
 
         collection.updateOne(Filters.eq("uuid", player.getUuid().toString()), new Document("$set", Document.parse(GSON.toJson(document))));
+    }
+
+    @Override
+    public List<PunishPlayer> getPlayerByAddresses(String address) {
+        ArrayList<Document> documents = this.collection.find(Filters.eq("ipAddresses", address)).into(new ArrayList<>());
+        List<PunishPlayer> players = new ArrayList<>();
+        documents.forEach(document -> GSON.fromJson(document.toJson(JSON_WRITER_SETTINGS), PLAYER_TYPE));
+        return players;
     }
 }

@@ -5,39 +5,27 @@ package de.rexlmanu.punish.bootstrap.layout;
 
 import de.rexlmanu.punish.library.PunishLibrary;
 import de.rexlmanu.punish.protocol.punish.Context;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.List;
+
+@AllArgsConstructor
+@Data
 public class PunishLayout {
 
-    public static String getBanLayout(Context context) {
-        return String.format(
-                "       §a§lTeam§2§lHG\n" +
-                        "§8§m---------------------------------------\n" +
-                        "\n" +
-                        "§cDu wurdest vom §cNetzwerk gebannt\n" +
-                        "\n" +
-                        "§aGrund §8» §e%s\n" +
-                        "\n" +
-                        "§aGebannt bis §8» §7%s\n" +
-                        "\n" +
-                        "§7Stelle einen Entbannungsantrag im TeamSpeak\n" +
-                        "\n" +
-                        "§8§m---------------------------------------\n",
-                context.getReason().getReason(), formatExpiration(context.getExpiration()));
+    private List<String> layout;
+
+    public String getAsKickLayout(String reason, String expiration) {
+        StringBuilder builder = new StringBuilder();
+        for (String s : this.layout) builder.append(s.replace("%reason", reason).replace("%date", expiration));
+        return builder.toString();
     }
 
-    public static String getKickLayout(String reason) {
-        return String.format(
-                "       §a§lTeam§2§lHG\n" +
-                        "§8§m---------------------------------------\n" +
-                        "\n" +
-                        "§cDu wurdest vom §cNetzwerk gekickt\n" +
-                        "\n" +
-                        "§aGrund §8» §e%s\n" +
-                        "\n" +
-                        "§8§m---------------------------------------\n",
-                reason);
+    public String getAsKickLayout(String reason, long expiration) {
+        return this.getAsKickLayout(reason, formatExpiration(expiration));
     }
 
     public static String formatExpiration(long expiration) {

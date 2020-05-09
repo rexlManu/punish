@@ -3,29 +3,25 @@
  */
 package de.rexlmanu.punish.bootstrap.command;
 
-import com.google.common.collect.Lists;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.rexlmanu.punish.bootstrap.PunishPlugin;
-import de.rexlmanu.punish.bootstrap.layout.PunishLayout;
 import de.rexlmanu.punish.library.PunishLibrary;
 import de.rexlmanu.punish.protocol.PunishPlayer;
-import de.rexlmanu.punish.protocol.punish.Type;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class BanHistoryCommand extends Command {
-    public BanHistoryCommand() {
-        super("banhistory", "punish.command.banhistory");
+public class ClearHistoryCommand extends Command {
+    public ClearHistoryCommand() {
+        super("clearhistory", "punish.command.clearhistory");
     }
 
     @Override
     public void execute(CommandSender sender, String[] arguments) {
-        if (arguments.length != 1) {
-            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /banhistory <name>"));
+        if (arguments.length < 1) {
+            sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Verwendung: /clearhistory <name>"));
             return;
         }
         UUID uuid = CloudAPI.getInstance().getPlayerUniqueId(arguments[0]);
@@ -46,15 +42,12 @@ public class BanHistoryCommand extends Command {
             return;
         }
 
-        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Banhistorie: "));
-        Lists.reverse(punishPlayer.getContexts().stream().filter(c -> c.getType().equals(Type.BAN)).collect(Collectors.toList())).forEach(context -> {
-            sender.sendMessage(TextComponent.fromLegacyText(String.format(
-                    "§eGrund§8: §7%s§8, §eBandatum§8: §7%s§8, §eEntbannungsdatum§8: §7%s§8, §eManuelle Entbannung§8: §7%s",
-                    context.getReason().getReason(),
-                    PunishLibrary.formatDate(context.getCreateDate()),
-                    PunishLayout.formatExpiration(context.getExpiration()),
-                    context.isPardon() ? "§aJa" : "§cNein"
-            )));
-        });
+        punishPlayer.getContexts().clear();
+        PunishPlugin.getPlugin().getProvider().updatePlayer(punishPlayer);
+        sender.sendMessage(TextComponent.fromLegacyText(PunishLibrary.PREFIX + "Seine History wurde erfolgreich gelöscht."));
+        if (PunishPlugin.PUNISH_PLAYER_MAP.containsKey(uuid)) {
+            PunishPlugin.PUNISH_PLAYER_MAP.put(uuid, punishPlayer);
+        }
+
     }
 }

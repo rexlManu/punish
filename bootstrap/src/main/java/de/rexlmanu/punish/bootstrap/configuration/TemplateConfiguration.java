@@ -8,9 +8,11 @@ import com.google.gson.reflect.TypeToken;
 import de.rexlmanu.punish.bootstrap.PunishPlugin;
 import de.rexlmanu.punish.library.PunishLibrary;
 import de.rexlmanu.punish.protocol.punish.template.PunishTemplate;
+import de.rexlmanu.punish.protocol.punish.template.TemplateStage;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 
 public class TemplateConfiguration extends Configuration {
@@ -22,7 +24,12 @@ public class TemplateConfiguration extends Configuration {
         super(new File(PunishPlugin.getPlugin().getDataFolder(), "templates.json"));
 
         JsonArray defaultArray = new JsonArray();
-        defaultArray.add(PunishLibrary.GSON.toJsonTree(new PunishTemplate(1, "Client Mods", de.rexlmanu.punish.protocol.punish.Type.BAN, -1)));
+        defaultArray.add(PunishLibrary.GSON.toJsonTree(new PunishTemplate(
+                1,
+                "Client Mods",
+                de.rexlmanu.punish.protocol.punish.Type.BAN,
+                Collections.singletonList(new TemplateStage(-1))
+        )));
         this.createDefault(defaultArray);
 
         this.load();
