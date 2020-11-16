@@ -7,6 +7,10 @@
     <groupId>de.rexlmanu</groupId>
     <artifactId>punish</artifactId>
     <packaging>pom</packaging>
+    <description>Punish is a system, combined with mute and bans, for Minecraft networks to punish players simply and
+        efficiently with predefined reasons. In addition, it is a high-performance and modular system that is suitable
+        for further development through easy expandability.
+    </description>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>bootstrap</module>
