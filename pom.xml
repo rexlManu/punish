@@ -17,10 +17,6 @@
 
     <repositories>
         <repository>
-            <id>it-lampe</id>
-            <url>https://repo.it-lampe.de/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
